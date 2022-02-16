@@ -44,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -258,9 +259,13 @@ public class AliAuthPlugin extends FlutterActivity implements FlutterPlugin, Met
                 tokenRet.setToken("");
                 if (jsonObj != null && jsonObj.contains("isChecked")) {
                     JSONObject isCheck = JSONObject.parseObject(jsonObj);
-                    tokenRet.setToken(String.valueOf(isCheck.getBooleanValue("isChecked")));
+                    boolean isChecked = isCheck.getBooleanValue("isChecked");
+                    if(isChecked && !tokenRet.getCode().equals("700002")) {
+                        resultData(tokenRet.toJsonString());
+                    }else {
+                        Toast.makeText(activity, "请先阅读并同意《认证服务条款》和《隐私政策》、《用户协议》", Toast.LENGTH_LONG).show();
+                    }
                 }
-                resultData(tokenRet.toJsonString());
             }
         });
     }
